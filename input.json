@@ -1,0 +1,142 @@
+{
+"PLATFORMS" : [
+
+    { 
+        "platform" : "Pestalozzi Education Centre",
+        "short_name" : "PEC",
+        "website_url" : "https://enko-pestalozzi-zambia.com",
+        "login_credentials" : {
+            "username" : "itsupport@enkoeducation.com",
+            "password" : "P3C@22*"
+        },
+        "country_code" : "ZM",
+        "cluster" : "SH",
+        "active" : true           
+    },
+    
+    { 
+        "platform" : "Enko Mozambique",
+        "short_name" : "MZ",
+        "website_url" : "https://enko-mozambique.com",
+        "login_credentials" : {
+            "username" : "itsupport@enkoeducation.com",
+            "password" : "RivS@22*"
+        },
+        "country_code" : "MZ",
+        "cluster" : "SH",
+        "active" : true           
+    },
+
+    { 
+        "platform" : "Enko Botho",
+        "short_name" : "BOTHO",
+        "website_url" : "https://enko-botho-botswana.com",
+        "login_credentials" : {
+            "username" : "itsupport@enkoeducation.com",
+            "password" : "BoT@22*"
+        },
+        "country_code" : "BW",
+        "cluster" : "SH",
+        "active" : true           
+    },
+    { 
+        "platform" : "Enko South Africa",
+        "short_name" : "ZA",
+        "website_url" : "https://enko-southafrica.com",
+        "login_credentials" : {
+            "username" : "itsupport@enkoeducation.com",
+            "password" : "AgpS@22*"
+        },
+        "country_code" : "ZA",
+        "cluster" : "SH",
+        "active" : true           
+    }
+
+],
+
+"CLUSTERS" : {
+    "SH" :  {
+        "active" : true
+    },
+    "NH" :  {
+        "active" : true
+    }
+},
+
+"CATEGORIES" : {
+
+    "students" : {
+        "active" : true,
+        "max_updates_per_round" : null
+    },
+    "families" : {
+        "active": true,
+        "max_updates_per_round" : null 
+    },
+    "guardians" : {
+        "active" : true,
+        "max_updates_per_round" : null 
+    }
+},
+
+"REPORTING" : {
+    
+    "main_statistics" : [
+        
+        "Number of wrong student codes found",
+        "Number of student codes replaced",
+        "Number of wrong family codes found",
+        "Number of family codes replaced",
+        "Number of wrong guardian codes found",
+        "Number of guardian codes replaced"
+    ],
+
+    "sender_credentials": {
+        "email" : "itsupport@enkoeducation.com",
+        "password": "AzErTy@12345"
+    },
+
+    "frequencies" : {
+
+      "systematic_daily" : {
+        "frequency": "daily",
+        "message_title" : "[DAILY REPORT] EDUKA CODE UPDATES",
+        "recipient_list" : ["frederic.tchouli@enkoeducation.com"],
+        "branding" : {
+            "color" : "#509E2F",
+            "font" : "Montserrat"
+        }
+     },
+
+     "daily_if_errors" : {
+        "frequency": "daily",
+        "message_title" : "[REPORT] EDUKA CODE UPDATES",
+        "recipient_list" : ["teamit@enkoeducation.com"],
+        "branding" : {
+            "color" : "#E3242B",
+            "font" : "Montserrat"
+        }
+     },
+
+     "systematic_weekly" : {
+        "frequency": "weekly",
+        "message_title" : "[WEEKLY REPORT] EDUKA CODE UPDATES",
+        "recipient_list" : ["teamit@enkoeducation.com"],
+        "branding" : {
+            "color" : "#8A1538",
+            "font" : "Montserrat"
+        }
+     },
+
+     "systematic_monthly" : {
+        "frequency": "monthly",
+        "message_title" : "[MONTHLY REPORT] EDUKA CODE UPDATES",
+        "recipient_list" : ["teamit@enkoeducation.com"],
+        "branding" : {
+            "color" : "#f1b434",
+            "font" : "Montserrat"
+        }
+     }
+    }   
+}
+}

@@ -1,0 +1,85 @@
+{# reports/templates/daily_report.html #}
+<html>
+    <head>
+        <style>
+            .styled-table {
+                border-collapse: collapse;
+                margin: 25px 0;
+                font-size: 0.9em;
+                font-family: sans-serif;
+                min-width: 400px;
+                box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+            }
+
+            .styled-table thead tr {
+                background-color: #009879;
+                color: #ffffff;
+                text-align: left;
+            }
+
+            .styled-table th, .styled-table td {
+                padding: 12px 15px;
+            }
+
+            .styled-table tbody tr {
+                border-bottom: 1px solid #dddddd;
+            }
+            
+            .styled-table tbody tr:nth-of-type(even) {
+                background-color: #f3f3f3;
+            }
+            
+            .styled-table tbody tr:last-of-type {
+                border-bottom: 2px solid #009879;
+            }
+
+            .styled-table tbody tr.active-row {
+                font-weight: bold;
+                color: #009879;
+            }
+        </style>
+
+    </head>
+    <body>
+        <table class="styled-table">
+            <thead>
+                <tr>
+                    <th>Platform</th>
+                    <th>Wrong student codes found</th>
+                    <th>Student codes replaced</th>
+                    <th>Wrong family codes found</th>
+                    <th>Family codes replaced</th>
+                    <th>Wrong guardian codes found</th>
+                    <th>Guardian codes replaced</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for platform, platform_statistics in daily_report.items() %}
+                <tr class="active-row">
+                    <td>{{platform}}</td>
+                    {%for statistic, value in platform_statistics.items() %}
+                    <td>{{value}}</td>
+                    {% endfor %}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <br>
+        <table class="styled-table">
+            <thead>
+                <tr>
+                    <th>Problem</th>
+                    <th>Cause</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for error1  in errors %}
+                <tr class="active-row">
+                    <td>{{error1.description}}</td>
+                    <td>{{error1.origin}}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </body>
+</html>
