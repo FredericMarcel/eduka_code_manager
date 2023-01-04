@@ -1,0 +1,8 @@
+.venv/
+LICENSE
+README.md
+__pycache__/
+bank/
+logs/
+reports/history/
+reports/templates/weekly_report.html 
