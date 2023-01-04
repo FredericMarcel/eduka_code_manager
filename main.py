@@ -52,4 +52,4 @@ with open(errors_filename, "w") as errors_json:
     json.dump(error_dict, errors_json)
     
 date_for_email = strftime("%d/%m/%Y  %H:%M", gmtime()) 
-REPORT_SENT = send_daily_report(json_input['REPORTING']['sender_credentials'], ['frederic.tchouli@enkoeducation.com'], statistics, errors,  [], date_for_email)
+REPORT_SENT = send_daily_report(json_input['REPORTING']['sender_credentials'], ['teamit@enkoeducation.com'], statistics, errors,  [], date_for_email)
