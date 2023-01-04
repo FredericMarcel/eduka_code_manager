@@ -12,10 +12,9 @@ from bs4 import BeautifulSoup
 
 gender_dict = {"G": "male", "F": "female"}
 
-def replace_student_codes(json_input, report_statistics):
-    DEBUG_STUDENT = True 
+def replace_student_codes(json_input, report_statistics): 
     errors = []
-    if DEBUG_STUDENT:
+    if json_input['DEBUG']:
        wait = 100
     else:
         wait = 10 
@@ -89,7 +88,6 @@ def replace_student_codes(json_input, report_statistics):
                         driver1.find_element(By.XPATH, '//*[@id="CLTableCriteria"]/tbody/tr/td[2]/span/span/input').click()
                         driver1.find_element(By.XPATH, '//*[@id="CLTableCriteria"]/tbody/tr/td[2]/span/span/input').clear()
                         driver1.find_element(By.XPATH, '//*[@id="CLTableCriteria"]/tbody/tr/td[2]/span/span/input').send_keys(platform["country_code"] + "-ST-")
-                        
                     except Exception as e:
                         description = f"{platform['platform']} - {gender_eng} students --- Adding Identification Code Criterion failed"
                         origin = traceback.format_exc()
@@ -109,6 +107,7 @@ def replace_student_codes(json_input, report_statistics):
                         driver1.find_element(By.XPATH, '//*[@id="CriterionSearchBox"]').click()
                         driver1.find_element(By.XPATH, '//*[@id="CriterionSearchBox"]').clear()
                         driver1.find_element(By.XPATH, '//*[@id="CriterionSearchBox"]').send_keys("gender")
+                        time.sleep(15)
                         # select the student gender property that shows up upon search 
                         element = WebDriverWait(driver1, wait).until(EC.element_to_be_clickable((By.XPATH, '//*[@id="SearchCriteriaList"]/div'))) 
                         driver1.find_element(By.XPATH, '//*[@id="SearchCriteriaList"]/div').click()
@@ -116,9 +115,10 @@ def replace_student_codes(json_input, report_statistics):
                         element = WebDriverWait(driver1, wait).until(EC.element_to_be_clickable((By.XPATH, '//*[@id="CLTableCriteria"]/tbody/tr[2]/td[2]/span/span'))) 
                         # Click on the Add button 
                         driver1.find_element(By.XPATH, '//*[@id="CLTableCriteria"]/tbody/tr[2]/td[2]/span/span').click()
-                        # select the gender of interest for this round 
-                        element = WebDriverWait(driver1, wait).until(EC.element_to_be_clickable((By.XPATH, '//*[@id="RTLstValues"]/div[1]'))) 
-                        driver1.find_element(By.XPATH, f"//div[@id='RTLstValues']/div[@data-key='{gender}']").click()
+                        # select the gender of interest for this round
+                        xpath_gender = f"//div[@id='RTLstValues']/div[@data-key='{gender}']" 
+                        element = WebDriverWait(driver1, wait).until(EC.element_to_be_clickable((By.XPATH, xpath_gender))) 
+                        driver1.find_element(By.XPATH,xpath_gender).click()
                                 
                     except Exception as e:
                         description = f"{platform['platform']} - {gender_eng} students --- Failed to add Gender Criterion to student list."
@@ -154,9 +154,9 @@ def replace_student_codes(json_input, report_statistics):
                         continue 
                     
                     try: 
-                        
+                        element = WebDriverWait(driver1, wait).until(EC.element_to_be_clickable((By.ID, "OpenList")))
                         driver1.find_element(By.ID, "OpenList").click() 
-                        # switch driver to newly opened tab 
+                        #switch driver to newly opened tab 
                         driver1.switch_to.window(driver1.window_handles[1])
                         element = WebDriverWait(driver1, wait).until(EC.element_to_be_clickable((By.XPATH, '/html/body/div[2]/div[2]/div/div/table/tbody/tr[1]/td[1]'))) 
                         driver1.find_element(By.XPATH,  '//*[@id="CustomListTable0_length"]/label/select').click()
@@ -199,7 +199,7 @@ def replace_student_codes(json_input, report_statistics):
                         
                         driver2.get(platform["website_url"] + "/configuration/manage/sync")
                         
-                        element = WebDriverWait(driver1, wait).until(EC.presence_of_element_located((By.ID, "txLogin")))
+                        element = WebDriverWait(driver2, wait).until(EC.presence_of_element_located((By.ID, "txLogin")))
                         driver2.find_element(By.ID,"txLogin").click()
                         driver2.find_element(By.ID,"txLogin").clear()
                         driver2.find_element(By.ID, "txLogin").send_keys(platform["login_credentials"]["username"])
@@ -238,8 +238,9 @@ def replace_student_codes(json_input, report_statistics):
                             wrong_student_code = None 
                             
                             #Loop over wrong codes 
+                            max_updates_per_round = json_input['CATEGORIES']['students']['max_updates_per_round']
                             for student_code_container in list_of_wrong_codes:
-                                if wrong_code_count >= num_of_wrong_codes:
+                                if wrong_code_count >= min(num_of_wrong_codes, max_updates_per_round):
                                     break 
                                 
                                 wrong_student_code = student_code_container.get_text().strip()
@@ -251,7 +252,7 @@ def replace_student_codes(json_input, report_statistics):
                                     driver2.find_element(By.XPATH,  '//*[@id="PersonCodeBox"]').clear()
                                     
                                     # Don't change actual codes in DEBUG mode !! 
-                                    if DEBUG_STUDENT:
+                                    if json_input['DEBUG']:
                                         driver2.find_element(By.XPATH,  '//*[@id="PersonCodeBox"]').send_keys("XX-XX-X-XXXXXX" + ";" + "YY-YY-Y-YYYYYY")
                                     else:   
                                         driver2.find_element(By.XPATH,  '//*[@id="PersonCodeBox"]').send_keys(wrong_student_code + ";" + correct_code)
@@ -268,6 +269,8 @@ def replace_student_codes(json_input, report_statistics):
                                     used_codes.append(f"{correct_code};{wrong_student_code}")
                                 except Exception as e:
                                     description = f"{platform['platform']} - {gender_eng} students --- Failed to replace wrong code {wrong_student_code} by {correct_code}"
+                                    origin = traceback.format_exc()
+                                    e.__setattr__("origin", origin)
                                     logging.exception(description)
                                     e.__setattr__("description", description)
                                     errors.append(e)

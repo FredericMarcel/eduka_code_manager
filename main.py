@@ -26,7 +26,30 @@ for platform in json_input["PLATFORMS"]:
         report_statistics[platform['platform']][statistics] = 0
 
 print(report_statistics.__str__())
-statistics, errors = replace_student_codes(json_input, report_statistics)
-#statistics_updated01, errors = replace_family_codes(json_input, statistics)
+statistics_intermediate, errors_students = replace_student_codes(json_input, report_statistics)
+statistics, errors_families = replace_family_codes(json_input, statistics_intermediate)
 
-REPORT_SENT = send_daily_report({ 'email' : 'frederic.tchouli@enkoeducation.com', 'password': 'Se19neurJes06'}, ['frederic.tchouli@enkoeducation.com'], statistics, errors,  [])
+
+# write errors into a json file 
+errors = errors_families + errors_students
+error_dict = dict()
+error_count = 0
+for error in errors:
+    error_dict[str(error_count)]  = dict()
+    error_dict[str(error_count)]["description"] = error.description
+    error_dict[str(error_count)]["origin"] = error.origin 
+    error_count += 1
+    
+    
+# archive report statistics  
+statistics_filename = './reports/history/daily/statistics__' + current_GMT_log + '.json'
+with open(statistics_filename, "w") as statistics_json:
+    json.dump(statistics, statistics_json)
+    
+# archive report errors
+errors_filename = './reports/history/daily/errors__' + current_GMT_log + '.json'
+with open(errors_filename, "w") as errors_json:
+    json.dump(error_dict, errors_json)
+    
+date_for_email = strftime("%d/%m/%Y  %H:%M", gmtime()) 
+REPORT_SENT = send_daily_report(json_input['REPORTING']['sender_credentials'], ['frederic.tchouli@enkoeducation.com'], statistics, errors,  [], date_for_email)

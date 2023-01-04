@@ -9,11 +9,12 @@ from selenium.webdriver.chrome.options import Options
 import  time, datetime, random   
 from selenium.common.exceptions import *
 from bs4 import BeautifulSoup
+import math 
 
 def replace_family_codes(json_input, report_statistics):
-    DEBUG_FAMILY = True 
+    
     errors = []
-    if DEBUG_FAMILY:
+    if json_input['DEBUG']:
        wait = 100
     else:
         wait = 10 
@@ -219,16 +220,19 @@ def replace_family_codes(json_input, report_statistics):
                             wrong_family_code = None 
                             
                             #Loop over wrong codes 
+                            max_updates_per_round = json_input['CATEGORIES']['families']['max_updates_per_round']
                             for family_code_container in list_of_wrong_codes:
-                                if wrong_code_count >= num_of_wrong_codes:
-                                    break 
+                                
+                                if wrong_code_count >= min(num_of_wrong_codes, max_updates_per_round):
+                                    break
+                                
                                 wrong_family_code = family_code_container.get_text().strip()
                                 correct_code =  lines[wrong_code_count].strip()
                                 
                                 try:
                                     driver2.find_element(By.XPATH,'//*[@id="UserCodeBox"]').click()
                                     driver2.find_element(By.XPATH,'//*[@id="UserCodeBox"]').clear()
-                                    if DEBUG_FAMILY:
+                                    if json_input['DEBUG']:
                                         driver2.find_element(By.XPATH,'//*[@id="UserCodeBox"]').send_keys("XX-XX-X-XXXXXX" + ";" + "YY-YY-Y-YYYYYY")  
                                     else:
                                         driver2.find_element(By.XPATH,'//*[@id="UserCodeBox"]').send_keys(wrong_family_code + ";" + correct_code)

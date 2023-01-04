@@ -1,4 +1,7 @@
 {
+
+"DEBUG" : true, 
+
 "PLATFORMS" : [
 
     { 
@@ -66,16 +69,16 @@
 "CATEGORIES" : {
 
     "students" : {
-        "active" : true,
-        "max_updates_per_round" : null
+        "active" : false,
+        "max_updates_per_round" : 100
     },
     "families" : {
-        "active": true,
-        "max_updates_per_round" : null 
+        "active": false,
+        "max_updates_per_round" : 50 
     },
     "guardians" : {
         "active" : true,
-        "max_updates_per_round" : null 
+        "max_updates_per_round" : 80 
     }
 },
 
@@ -94,49 +97,6 @@
     "sender_credentials": {
         "email" : "itsupport@enkoeducation.com",
         "password": "AzErTy@12345"
-    },
-
-    "frequencies" : {
-
-      "systematic_daily" : {
-        "frequency": "daily",
-        "message_title" : "[DAILY REPORT] EDUKA CODE UPDATES",
-        "recipient_list" : ["frederic.tchouli@enkoeducation.com"],
-        "branding" : {
-            "color" : "#509E2F",
-            "font" : "Montserrat"
-        }
-     },
-
-     "daily_if_errors" : {
-        "frequency": "daily",
-        "message_title" : "[REPORT] EDUKA CODE UPDATES",
-        "recipient_list" : ["teamit@enkoeducation.com"],
-        "branding" : {
-            "color" : "#E3242B",
-            "font" : "Montserrat"
-        }
-     },
-
-     "systematic_weekly" : {
-        "frequency": "weekly",
-        "message_title" : "[WEEKLY REPORT] EDUKA CODE UPDATES",
-        "recipient_list" : ["teamit@enkoeducation.com"],
-        "branding" : {
-            "color" : "#8A1538",
-            "font" : "Montserrat"
-        }
-     },
-
-     "systematic_monthly" : {
-        "frequency": "monthly",
-        "message_title" : "[MONTHLY REPORT] EDUKA CODE UPDATES",
-        "recipient_list" : ["teamit@enkoeducation.com"],
-        "branding" : {
-            "color" : "#f1b434",
-            "font" : "Montserrat"
-        }
-     }
-    }   
+    }
 }
 }
