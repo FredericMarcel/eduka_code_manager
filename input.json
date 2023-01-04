@@ -1,6 +1,6 @@
 {
 
-"DEBUG" : true, 
+"DEBUG" : false, 
 
 "PLATFORMS" : [
 
@@ -69,11 +69,11 @@
 "CATEGORIES" : {
 
     "students" : {
-        "active" : false,
+        "active" : true,
         "max_updates_per_round" : 100
     },
     "families" : {
-        "active": false,
+        "active": true,
         "max_updates_per_round" : 50 
     },
     "guardians" : {
