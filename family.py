@@ -17,7 +17,7 @@ def replace_family_codes(json_input, report_statistics):
     if json_input['DEBUG']:
        wait = 100
     else:
-        wait = 10 
+        wait = 100
         
     if not  json_input["CATEGORIES"]["families"]['active']:
         logging.warning("Family code replacement turned off for all platforms.")
@@ -26,8 +26,7 @@ def replace_family_codes(json_input, report_statistics):
         for platform in json_input['PLATFORMS']:
             if (platform["cluster"] ==  'NH' and json_input["CLUSTERS"]["NH"]['active']) or (platform["cluster"] == "SH" and json_input["CLUSTERS"]["SH"]['active']):
                 logging.info(f"{platform['platform']} --- Family code replacement attempt starting...")
-                
-                total_codes_replaced = 0 
+                 
                 total_wrong_codes = 0   
                 used_codes = []
                 
@@ -90,7 +89,8 @@ def replace_family_codes(json_input, report_statistics):
                     driver1.find_element(By.XPATH, "//*[@id='CriterionSearchBox']").click()
                     driver1.find_element(By.XPATH, "//*[@id='CriterionSearchBox']").clear()
                     driver1.find_element(By.XPATH, "//*[@id='CriterionSearchBox']").send_keys("account code")
-                    element = WebDriverWait(driver1, wait).until(EC.element_to_be_clickable((By.XPATH, "//*[@id='SearchCriteriaList']/div")))
+                    time.sleep(15)
+                    element = WebDriverWait(driver1, wait).until(EC.presence_of_element_located((By.XPATH, "//*[@id='SearchCriteriaList']/div")))
                     driver1.find_element(By.XPATH, "//*[@id='SearchCriteriaList']/div").click()
                     element = WebDriverWait(driver1, wait).until(EC.element_to_be_clickable((By.XPATH,"//*[@id='CLTableCriteria']/tbody/tr/td[2]/span/select")))
                     driver1.find_element(By.XPATH,"//*[@id='CLTableCriteria']/tbody/tr/td[2]/span/select").click()
@@ -164,7 +164,7 @@ def replace_family_codes(json_input, report_statistics):
                 
                 list_of_wrong_codes = btfsoup.find_all("td", class_='Column0')
                 num_of_wrong_codes = len(list_of_wrong_codes)
-                total_wrong_codes = num_of_wrong_codes
+                total_wrong_codes += num_of_wrong_codes
                 
                 # report on number of wrong family codes per platform 
                 report_statistics[platform['platform']]["Number of wrong family codes found"] = num_of_wrong_codes
@@ -196,7 +196,7 @@ def replace_family_codes(json_input, report_statistics):
                     driver2.find_element(By.ID,"btConnect").click()
                     # wait the ready state to be complete
                     element = WebDriverWait(driver2, wait).until(EC.element_to_be_clickable((By.XPATH, "//*[@id='ui-id-11']")))
-                    driver2.find_element(By.XPATH, "//*[@id='ui-id-11']").click()
+                    driver2.find_element(By.XPATH, "//*[@id='ui-id-10']").click()
                     
                 except Exception as e:
                     description = f"{platform['short_name']} --- Login with Chrome webdriver #02 failed"
@@ -227,7 +227,7 @@ def replace_family_codes(json_input, report_statistics):
                                     break
                                 
                                 wrong_family_code = family_code_container.get_text().strip()
-                                correct_code =  lines[wrong_code_count].strip()
+                                correct_code =  lines[codes_replaced].strip()
                                 
                                 try:
                                     driver2.find_element(By.XPATH,'//*[@id="UserCodeBox"]').click()
@@ -239,15 +239,15 @@ def replace_family_codes(json_input, report_statistics):
                                     
                                     # Click on the Preview Button 
                                     driver2.find_element(By.XPATH,'//*[@id="tcodes"]/table/tbody/tr/td[3]/button[1]').click()
-                                    element = WebDriverWait(driver2, wait).until(EC.element_to_be_clickable((By.XPATH, '/html/body/div[8]/div[11]/div/button[1]')))
+                                    element = WebDriverWait(driver2, wait, ignored_exceptions=(StaleElementReferenceException)).until(EC.element_to_be_clickable((By.XPATH, '/html/body/div[8]/div[11]/div/button[1]')))
                                     
                                     #Click on the Save Button
                                     driver2.find_element(By.XPATH,'/html/body/div[8]/div[11]/div/button[1]').click()
                                     logging.warning(f"{platform['short_name']} --- Wrong family code {wrong_family_code} replaced by {correct_code}")
                                     used_codes.append(f"{correct_code};{wrong_family_code}")
-                                    total_codes_replaced += 1
+                                    codes_replaced += 1
                                     wrong_code_count += 1
-                                    
+                                    time.sleep(3)
                                 except Exception as e:
                                     description = f"{platform['short_name']} --- Failed to save code replacement of {wrong_family_code} with {correct_code}"
                                     origin = traceback.format_exc()
@@ -267,37 +267,40 @@ def replace_family_codes(json_input, report_statistics):
                     errors.append(e)
                     continue 
                 
-                try:
-                    # delete used codes from code bank file 
-                    with open(filename_temp, "r+") as bank_file:
-                            lines_temp = bank_file.readlines()
-                            # move file pointer to the beginning of a file
-                            bank_file.seek(0)
-                            # truncate the file
-                            bank_file.truncate()
-                            # write back only lines containing unused codes 
-                            bank_file.writelines(lines_temp[total_codes_replaced:])
-                    
-                    # store code replacements done as tuples in a dedicated file 
-                    filename_temp2 = "./bank/" + platform['short_name'] + "/" + platform['short_name'] + "__family__used.txt"
-                    with open(filename_temp2, "a+") as used_codes_file:
-                        used_codes_file.write("\n")
-                        for tuple in used_codes:
-                            used_codes_file.write(tuple)
+                
+                if not json_input['DEBUG']:
+                    try:
+                        # delete used codes from code bank file 
+                        with open(filename_temp, "r+") as bank_file:
+                                lines_temp = bank_file.readlines()
+                                # move file pointer to the beginning of a file
+                                bank_file.seek(0)
+                                # truncate the file
+                                bank_file.truncate()
+                                # write back only lines containing unused codes 
+                                bank_file.writelines(lines_temp[codes_replaced:])
+                        
+                        # store code replacements done as tuples in a dedicated file 
+                        filename_temp2 = "./bank/" + platform['short_name'] + "/" + platform['short_name'] + "__family__used.txt"
+                        with open(filename_temp2, "a+") as used_codes_file:
                             used_codes_file.write("\n")
-                                    
-                except Exception as e:
-                    description = f"{platform['short_name']} --- A problem occured when trying to delete used codes from bank and archiving them."
-                    origin = traceback.format_exc()
-                    e.__setattr__("origin", origin)
-                    logging.exception(description)    
-                    e.__setattr__("description", description)
-                    errors.append(e)
-                    continue
-                report_statistics[platform['platform']]["Number of family codes replaced"] = total_codes_replaced                
+                            for tuple in used_codes:
+                                used_codes_file.write(tuple)
+                                used_codes_file.write("\n")
+                                        
+                    except Exception as e:
+                        description = f"{platform['short_name']} --- A problem occured when trying to delete used codes from bank and archiving them."
+                        origin = traceback.format_exc()
+                        e.__setattr__("origin", origin)
+                        logging.exception(description)    
+                        e.__setattr__("description", description)
+                        errors.append(e)
+                        continue
+                
+                report_statistics[platform['platform']]["Number of family codes replaced"] =  codes_replaced                
             
             else: 
-                logging.warning(f"{platform['short_name']} --- Family code replacement deactivated at cluster level.")
+                logging.warning(f"{platform['short_name']} --- Family code replacement turned off at cluster level.")
                 
     return report_statistics, errors
 

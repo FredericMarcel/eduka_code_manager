@@ -11,19 +11,19 @@ from selenium.common.exceptions import *
 from bs4 import BeautifulSoup
 
 gender_dict = {"G": "male", "F": "female"}
-
 def replace_student_codes(json_input, report_statistics): 
     errors = []
     if json_input['DEBUG']:
        wait = 100
     else:
-        wait = 10 
+        wait = 100
         
     if not json_input["CATEGORIES"]["students"]['active']:
         logging.warning("Student code replacement turned off for all platforms.")
         return report_statistics, list()
     else:   
         for platform in json_input['PLATFORMS']:
+            
             if (platform["cluster"] ==  'NH' and json_input["CLUSTERS"]["NH"]['active']) or (platform["cluster"] == "SH" and json_input["CLUSTERS"]["SH"]['active']):
                 logging.info(f"{platform['platform']} --- Student code replacement attempt starting...")
                 
@@ -76,7 +76,8 @@ def replace_student_codes(json_input, report_statistics):
                         driver1.find_element(By.XPATH, '//*[@id="CriterionSearchBox"]').click()
                         driver1.find_element(By.XPATH, '//*[@id="CriterionSearchBox"]').clear()
                         driver1.find_element(By.XPATH, '//*[@id="CriterionSearchBox"]').send_keys("identification") 
-                        element = WebDriverWait(driver1, wait).until(EC.element_to_be_clickable((By.XPATH, '//*[@id="SearchCriteriaList"]/div'))) 
+                        time.sleep(15)
+                        element = WebDriverWait(driver1, wait).until(EC.presence_of_element_located((By.XPATH, '//*[@id="SearchCriteriaList"]/div'))) 
                         driver1.find_element(By.XPATH, '//*[@id="SearchCriteriaList"]/div').click()
                         # Define criterion : does not contain country code + "-ST-"
                         element = WebDriverWait(driver1, wait).until(EC.element_to_be_clickable((By.XPATH, '//*[@id="CLTableCriteria"]/tbody/tr/td[2]/span/select'))) 
@@ -109,7 +110,7 @@ def replace_student_codes(json_input, report_statistics):
                         driver1.find_element(By.XPATH, '//*[@id="CriterionSearchBox"]').send_keys("gender")
                         time.sleep(15)
                         # select the student gender property that shows up upon search 
-                        element = WebDriverWait(driver1, wait).until(EC.element_to_be_clickable((By.XPATH, '//*[@id="SearchCriteriaList"]/div'))) 
+                        element = WebDriverWait(driver1, wait).until(EC.presence_of_element_located((By.XPATH, '//*[@id="SearchCriteriaList"]/div'))) 
                         driver1.find_element(By.XPATH, '//*[@id="SearchCriteriaList"]/div').click()
                         
                         element = WebDriverWait(driver1, wait).until(EC.element_to_be_clickable((By.XPATH, '//*[@id="CLTableCriteria"]/tbody/tr[2]/td[2]/span/span'))) 
@@ -211,7 +212,7 @@ def replace_student_codes(json_input, report_statistics):
                         driver2.find_element(By.ID,"btConnect").click()
                         #random wait for ready state to be complete
                         element = WebDriverWait(driver2, wait).until(EC.presence_of_element_located((By.XPATH, '//*[@id="ui-id-11"]')))
-                        driver2.find_element(By.XPATH, '//*[@id="ui-id-11"]').click()
+                        driver2.find_element(By.XPATH, '//*[@id="ui-id-10"]').click()
                         
                     except Exception as e:
                         description = f"{platform['platform']} - {gender_eng} students --- Failed to get to code replacement page."
@@ -244,7 +245,7 @@ def replace_student_codes(json_input, report_statistics):
                                     break 
                                 
                                 wrong_student_code = student_code_container.get_text().strip()
-                                correct_code =  lines[wrong_code_count].strip()
+                                correct_code =  lines[codes_replaced].strip()
                                 
                                 try:
                                    
@@ -267,6 +268,7 @@ def replace_student_codes(json_input, report_statistics):
                                     codes_replaced += 1
                                     #add a line containing used code and replaced code to used codes text file 
                                     used_codes.append(f"{correct_code};{wrong_student_code}")
+                                    time.sleep(3)
                                 except Exception as e:
                                     description = f"{platform['platform']} - {gender_eng} students --- Failed to replace wrong code {wrong_student_code} by {correct_code}"
                                     origin = traceback.format_exc()
@@ -291,40 +293,41 @@ def replace_student_codes(json_input, report_statistics):
                     
                     
                     # update code bank and replacement history files 
-                    try:
-                        # delete used codes from corresponding code bank 
-                        with open(filename_temp, "r+") as bank_file:
-                            lines_temp = bank_file.readlines()
-                            # move file pointer to the beginning of a file
-                            bank_file.seek(0)
-                            # truncate the file
-                            bank_file.truncate()
-                            # write back only lines containing unused codes 
-                            bank_file.writelines(lines_temp[codes_replaced:])
-                            
-                        #store code replacements done as tuples in a dedicated file 
-                        filename_temp2 = "./bank/" + platform['short_name'] + "/" + platform['short_name'] + "__" + gender_eng + "__" + "student__used.txt"
-                        with open(filename_temp2, "a+") as used_codes_file:
-                            used_codes_file.write("\n")
-                            for tuple in used_codes:
-                                used_codes_file.write(tuple)
-                                used_codes_file.write("\n")
+                    if not json_input['DEBUG']:
+                        try:
+                            # delete used codes from corresponding code bank 
+                            with open(filename_temp, "r+") as bank_file:
+                                lines_temp = bank_file.readlines()
+                                # move file pointer to the beginning of a file
+                                bank_file.seek(0)
+                                # truncate the file
+                                bank_file.truncate()
+                                # write back only lines containing unused codes 
+                                bank_file.writelines(lines_temp[codes_replaced:])
                                 
-                    except Exception as e:
-                        description = f"{platform['platform']} - {gender_eng} students --- Problem occured when attempting to delete and archive used codes."
-                        origin = traceback.format_exc()
-                        e.__setattr__("origin", origin)
-                        logging.exception(description)
-                        e.__setattr__("description", description)
-                        errors.append(e)
-                        continue
+                            #store code replacements done as tuples in a dedicated file 
+                            filename_temp2 = "./bank/" + platform['short_name'] + "/" + platform['short_name'] + "__" + gender_eng + "__" + "student__used.txt"
+                            with open(filename_temp2, "a+") as used_codes_file:
+                                used_codes_file.write("\n")
+                                for tuple in used_codes:
+                                    used_codes_file.write(tuple)
+                                    used_codes_file.write("\n")
+                                    
+                        except Exception as e:
+                            description = f"{platform['platform']} - {gender_eng} students --- Problem occured when attempting to delete and archive used codes."
+                            origin = traceback.format_exc()
+                            e.__setattr__("origin", origin)
+                            logging.exception(description)
+                            e.__setattr__("description", description)
+                            errors.append(e)
+                            continue
             
                 report_statistics[platform['platform']]['Number of wrong student codes found'] = total_wrong_codes
                 report_statistics[platform['platform']]['Number of student codes replaced'] = total_codes_replaced 
-                 
+                
             else:
                 logging.warning(f"{platform['platform']} --- Student code replacement turned off at cluster level.")
-                continue 
+                continue
             
     return report_statistics, errors 
 

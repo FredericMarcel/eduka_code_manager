@@ -41,6 +41,7 @@ def send_daily_report(sender_credentials : dict(), recipient_list : dict(), dail
         #initialise message object 
         message = MIMEMultipart("mixed")
         message["Subject"] = f"[{datetime_str}] Enko Hub code updates"
+        #message["Subject"] = "[RECAP 2023/01/10] Enko Hub code updates"
         message["From"] = sender_credentials["email"]
         
         #add rendered html to email message

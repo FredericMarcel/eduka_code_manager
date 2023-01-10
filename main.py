@@ -14,7 +14,7 @@ from student import *
 from reporting import *
 
 ### DEBUG to be set to False in production 
-DEBUG = True 
+#DEBUG = True 
 ###
 
 json_input = json.load(open("input.json"))
@@ -25,7 +25,8 @@ for platform in json_input["PLATFORMS"]:
     for statistics in json_input["REPORTING"]["main_statistics"]:
         report_statistics[platform['platform']][statistics] = 0
 
-print(report_statistics.__str__())
+
+#print(report_statistics.__str__())
 statistics_intermediate, errors_students = replace_student_codes(json_input, report_statistics)
 statistics, errors_families = replace_family_codes(json_input, statistics_intermediate)
 
@@ -50,6 +51,46 @@ with open(statistics_filename, "w") as statistics_json:
 errors_filename = './reports/history/daily/errors__' + current_GMT_log + '.json'
 with open(errors_filename, "w") as errors_json:
     json.dump(error_dict, errors_json)
-    
+
+"""
+statistics = { 
+ "Enko South Africa": {
+        "Number of wrong student codes found": 71,
+        "Number of student codes replaced": 71,
+        "Number of wrong family codes found": 86,
+        "Number of family codes replaced": 86,
+        "Number of wrong guardian codes found": "N/A : Ongoing Automation",
+        "Number of guardian codes replaced": 0
+    },
+ 
+  "Pestalozzi Education Centre": {
+        "Number of wrong student codes found": 3,
+        "Number of student codes replaced": 3,
+        "Number of wrong family codes found": 0,
+        "Number of family codes replaced": 0,
+        "Number of wrong guardian codes found": "N/A : Ongoing Automation",
+        "Number of guardian codes replaced": 0
+    },
+  
+  "Enko Mozambique": {
+        "Number of wrong student codes found": 3,
+        "Number of student codes replaced": 3,
+        "Number of wrong family codes found": 7,
+        "Number of family codes replaced": 7,
+        "Number of wrong guardian codes found": "N/A : Ongoing Automation",
+        "Number of guardian codes replaced": 0
+    },
+  
+  "Enko Botho": {
+        "Number of wrong student codes found": 5,
+        "Number of student codes replaced": 5,
+        "Number of wrong family codes found": 11,
+        "Number of family codes replaced": 11,
+        "Number of wrong guardian codes found": "N/A : Ongoing Automation",
+        "Number of guardian codes replaced": 0
+    }
+}   
+"""
+
 date_for_email = strftime("%d/%m/%Y  %H:%M", gmtime()) 
-REPORT_SENT = send_daily_report(json_input['REPORTING']['sender_credentials'], ['frederic.tchouli@enkoeducation.com'], statistics, errors,  [], date_for_email)
+REPORT_SENT = send_daily_report({'email': "frederic.tchouli@enkoeducation.com", "password": "Se19neurJes06"}, ['teamit@enkoeducation.com'], statistics, [],  [], date_for_email)
