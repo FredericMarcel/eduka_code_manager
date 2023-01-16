@@ -14,11 +14,6 @@ from family import *
 from student import * 
 from reporting import *
 
-### DEBUG to be set to False in production 
-#DEBUG = True 
-###
-
-
 def code_update_cron():
     json_input = json.load(open("input.json"))
     report_statistics = dict()
@@ -59,8 +54,8 @@ def code_update_cron():
 
     return None 
 
-#We run the cron One time
-#Before the scheduler take hand an hor later
+#We run the cron one time
+#Before the scheduler takes over an hour later 
 code_update_cron()
 
 # Task scheduling
@@ -75,3 +70,4 @@ code_update_cron()
         #schedule.run_pending()
         #time.sleep(600)
 
+################ END OF SCRIPT ########################
