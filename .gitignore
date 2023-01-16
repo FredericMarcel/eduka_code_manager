@@ -2,7 +2,5 @@
 LICENSE
 README.md
 __pycache__/
-reports/history/daily/
-reports/history/weekly/
-reports/templates/weekly_report.html 
 input.json
+temp.json
