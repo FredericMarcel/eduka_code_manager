@@ -1,0 +1,65 @@
+23-09-Jan 09:50:10 W. Central Africa Standard Time - root - INFO - Script started at 2023-01-09 08:50:10 W. Central Africa Standard Time
+23-09-Jan 09:50:10 W. Central Africa Standard Time - root - INFO - Pestalozzi Education Centre --- Student code replacement attempt starting...
+23-09-Jan 09:50:10 W. Central Africa Standard Time - root - INFO - Pestalozzi Education Centre --- male students currently dealt with...
+23-09-Jan 09:50:10 W. Central Africa Standard Time - selenium.webdriver.common.service - DEBUG - Started executable: `chromedriver` in a child process with pid: 6544
+23-09-Jan 09:50:11 W. Central Africa Standard Time - selenium.webdriver.remote.remote_connection - DEBUG - POST http://localhost:61176/session {"capabilities": {"firstMatch": [{}], "alwaysMatch": {"browserName": "chrome", "pageLoadStrategy": "normal", "goog:chromeOptions": {"extensions": [], "args": []}}}}
+23-09-Jan 09:50:11 W. Central Africa Standard Time - urllib3.connectionpool - DEBUG - Starting new HTTP connection (1): localhost:61176
+23-09-Jan 09:50:12 W. Central Africa Standard Time - urllib3.connectionpool - DEBUG - http://localhost:61176 "POST /session HTTP/1.1" 200 793
+23-09-Jan 09:50:12 W. Central Africa Standard Time - selenium.webdriver.remote.remote_connection - DEBUG - Remote response: status=200 | data={"value":{"capabilities":{"acceptInsecureCerts":false,"browserName":"chrome","browserVersion":"108.0.5359.125","chrome":{"chromedriverVersion":"108.0.5359.71 (1e0e3868ee06e91ad636a874420e3ca3ae3756ac-refs/branch-heads/5359@{#1016})","userDataDir":"C:\\Users\\Frederic\\AppData\\Local\\Temp\\scoped_dir6544_625387061"},"goog:chromeOptions":{"debuggerAddress":"localhost:61180"},"networkConnectionEnabled":false,"pageLoadStrategy":"normal","platformName":"windows","proxy":{},"setWindowRect":true,"strictFileInteractability":false,"timeouts":{"implicit":0,"pageLoad":300000,"script":30000},"unhandledPromptBehavior":"dismiss and notify","webauthn:extension:credBlob":true,"webauthn:extension:largeBlob":true,"webauthn:virtualAuthenticators":true},"sessionId":"c985f094ef00f44678b1392965fbb89b"}} | headers=HTTPHeaderDict({'Content-Length': '793', 'Content-Type': 'application/json; charset=utf-8', 'cache-control': 'no-cache'})
+23-09-Jan 09:50:12 W. Central Africa Standard Time - selenium.webdriver.remote.remote_connection - DEBUG - Finished Request
+23-09-Jan 09:50:12 W. Central Africa Standard Time - selenium.webdriver.remote.remote_connection - DEBUG - POST http://localhost:61176/session/c985f094ef00f44678b1392965fbb89b/url {"url": "https://enko-pestalozzi-zambia.com/list/manage/editlist/student"}
+23-09-Jan 09:50:13 W. Central Africa Standard Time - urllib3.connectionpool - DEBUG - http://localhost:61176 "POST /session/c985f094ef00f44678b1392965fbb89b/url HTTP/1.1" 200 14
+23-09-Jan 09:50:13 W. Central Africa Standard Time - selenium.webdriver.remote.remote_connection - DEBUG - Remote response: status=200 | data={"value":null} | headers=HTTPHeaderDict({'Content-Length': '14', 'Content-Type': 'application/json; charset=utf-8', 'cache-control': 'no-cache'})
+23-09-Jan 09:50:13 W. Central Africa Standard Time - selenium.webdriver.remote.remote_connection - DEBUG - Finished Request
+23-09-Jan 09:50:13 W. Central Africa Standard Time - selenium.webdriver.remote.remote_connection - DEBUG - POST http://localhost:61176/session/c985f094ef00f44678b1392965fbb89b/element {"using": "css selector", "value": "[id=\"txLogin\"]"}
+23-09-Jan 09:50:13 W. Central Africa Standard Time - urllib3.connectionpool - DEBUG - http://localhost:61176 "POST /session/c985f094ef00f44678b1392965fbb89b/element HTTP/1.1" 404 879
+23-09-Jan 09:50:13 W. Central Africa Standard Time - selenium.webdriver.remote.remote_connection - DEBUG - Remote response: status=404 | data={"value":{"error":"no such window","message":"no such window: target window already closed\nfrom unknown error: web view not found\n  (Session info: chrome=108.0.5359.125)","stacktrace":"Backtrace:\n\t(No symbol) [0x00CAF243]\n\t(No symbol) [0x00C37FD1]\n\t(No symbol) [0x00B2D04D]\n\t(No symbol) [0x00B12D7A]\n\t(No symbol) [0x00B7BE7B]\n\t(No symbol) [0x00B8C196]\n\t(No symbol) [0x00B78386]\n\t(No symbol) [0x00B5163C]\n\t(No symbol) [0x00B5269D]\n\tGetHandleVerifier [0x00F49A22+2655074]\n\tGetHandleVerifier [0x00F3CA24+2601828]\n\tGetHandleVerifier [0x00D58C0A+619850]\n\tGetHandleVerifier [0x00D57830+614768]\n\t(No symbol) [0x00C405FC]\n\t(No symbol) [0x00C45968]\n\t(No symbol) [0x00C45A55]\n\t(No symbol) [0x00C5051B]\n\tBaseThreadInitThunk [0x75C400F9+25]\n\tRtlGetAppContainerNamedObjectPath [0x77CE7BBE+286]\n\tRtlGetAppContainerNamedObjectPath [0x77CE7B8E+238]\n"}} | headers=HTTPHeaderDict({'Content-Length': '879', 'Content-Type': 'application/json; charset=utf-8', 'cache-control': 'no-cache'})
+23-09-Jan 09:50:13 W. Central Africa Standard Time - selenium.webdriver.remote.remote_connection - DEBUG - Finished Request
+23-09-Jan 09:50:13 W. Central Africa Standard Time - root - ERROR - Pestalozzi Education Centre - male students --- Failed to log in with Selenium driver for getting wrong student codes.
+Traceback (most recent call last):
+  File "D:\Documents\ENKO EDUCATION\IT\CODE\eduka_code_manager\student.py", line 42, in replace_student_codes
+    element = WebDriverWait(driver1, wait).until(EC.presence_of_element_located((By.ID, "txLogin")))
+  File "D:\Documents\ENKO EDUCATION\IT\CODE\eduka_code_manager\.venv\lib\site-packages\selenium\webdriver\support\wait.py", line 86, in until
+    value = method(self._driver)
+  File "D:\Documents\ENKO EDUCATION\IT\CODE\eduka_code_manager\.venv\lib\site-packages\selenium\webdriver\support\expected_conditions.py", line 64, in _predicate
+    return driver.find_element(*locator)
+  File "D:\Documents\ENKO EDUCATION\IT\CODE\eduka_code_manager\.venv\lib\site-packages\selenium\webdriver\remote\webdriver.py", line 861, in find_element
+    return self.execute(Command.FIND_ELEMENT, {"using": by, "value": value})["value"]
+  File "D:\Documents\ENKO EDUCATION\IT\CODE\eduka_code_manager\.venv\lib\site-packages\selenium\webdriver\remote\webdriver.py", line 444, in execute
+    self.error_handler.check_response(response)
+  File "D:\Documents\ENKO EDUCATION\IT\CODE\eduka_code_manager\.venv\lib\site-packages\selenium\webdriver\remote\errorhandler.py", line 249, in check_response
+    raise exception_class(message, screen, stacktrace)
+selenium.common.exceptions.NoSuchWindowException: Message: no such window: target window already closed
+from unknown error: web view not found
+  (Session info: chrome=108.0.5359.125)
+Stacktrace:
+Backtrace:
+	(No symbol) [0x00CAF243]
+	(No symbol) [0x00C37FD1]
+	(No symbol) [0x00B2D04D]
+	(No symbol) [0x00B12D7A]
+	(No symbol) [0x00B7BE7B]
+	(No symbol) [0x00B8C196]
+	(No symbol) [0x00B78386]
+	(No symbol) [0x00B5163C]
+	(No symbol) [0x00B5269D]
+	GetHandleVerifier [0x00F49A22+2655074]
+	GetHandleVerifier [0x00F3CA24+2601828]
+	GetHandleVerifier [0x00D58C0A+619850]
+	GetHandleVerifier [0x00D57830+614768]
+	(No symbol) [0x00C405FC]
+	(No symbol) [0x00C45968]
+	(No symbol) [0x00C45A55]
+	(No symbol) [0x00C5051B]
+	BaseThreadInitThunk [0x75C400F9+25]
+	RtlGetAppContainerNamedObjectPath [0x77CE7BBE+286]
+	RtlGetAppContainerNamedObjectPath [0x77CE7B8E+238]
+
+23-09-Jan 09:50:13 W. Central Africa Standard Time - root - INFO - Pestalozzi Education Centre --- female students currently dealt with...
+23-09-Jan 09:50:13 W. Central Africa Standard Time - selenium.webdriver.common.service - DEBUG - Started executable: `chromedriver` in a child process with pid: 19420
+23-09-Jan 09:50:14 W. Central Africa Standard Time - selenium.webdriver.remote.remote_connection - DEBUG - POST http://localhost:61193/session {"capabilities": {"firstMatch": [{}], "alwaysMatch": {"browserName": "chrome", "pageLoadStrategy": "normal", "goog:chromeOptions": {"extensions": [], "args": []}}}}
+23-09-Jan 09:50:14 W. Central Africa Standard Time - urllib3.connectionpool - DEBUG - Starting new HTTP connection (1): localhost:61193
+23-09-Jan 09:50:14 W. Central Africa Standard Time - urllib3.connectionpool - DEBUG - http://localhost:61193 "POST /session HTTP/1.1" 200 795
+23-09-Jan 09:50:14 W. Central Africa Standard Time - selenium.webdriver.remote.remote_connection - DEBUG - Remote response: status=200 | data={"value":{"capabilities":{"acceptInsecureCerts":false,"browserName":"chrome","browserVersion":"108.0.5359.125","chrome":{"chromedriverVersion":"108.0.5359.71 (1e0e3868ee06e91ad636a874420e3ca3ae3756ac-refs/branch-heads/5359@{#1016})","userDataDir":"C:\\Users\\Frederic\\AppData\\Local\\Temp\\scoped_dir19420_1960209589"},"goog:chromeOptions":{"debuggerAddress":"localhost:61196"},"networkConnectionEnabled":false,"pageLoadStrategy":"normal","platformName":"windows","proxy":{},"setWindowRect":true,"strictFileInteractability":false,"timeouts":{"implicit":0,"pageLoad":300000,"script":30000},"unhandledPromptBehavior":"dismiss and notify","webauthn:extension:credBlob":true,"webauthn:extension:largeBlob":true,"webauthn:virtualAuthenticators":true},"sessionId":"37ac949126e515612515ad8574579611"}} | headers=HTTPHeaderDict({'Content-Length': '795', 'Content-Type': 'application/json; charset=utf-8', 'cache-control': 'no-cache'})
+23-09-Jan 09:50:14 W. Central Africa Standard Time - selenium.webdriver.remote.remote_connection - DEBUG - Finished Request
+23-09-Jan 09:50:14 W. Central Africa Standard Time - selenium.webdriver.remote.remote_connection - DEBUG - POST http://localhost:61193/session/37ac949126e515612515ad8574579611/url {"url": "https://enko-pestalozzi-zambia.com/list/manage/editlist/student"}

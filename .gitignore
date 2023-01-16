@@ -2,7 +2,6 @@
 LICENSE
 README.md
 __pycache__/
-logs/
 reports/history/daily/
 reports/history/weekly/
 reports/templates/weekly_report.html 
