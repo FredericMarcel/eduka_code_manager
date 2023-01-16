@@ -40,9 +40,9 @@ def send_daily_report(sender_credentials : dict(), recipient_list : dict(), dail
 
         #initialise message object 
         message = MIMEMultipart("mixed")
+        #message["Subject"] = f"[{datetime_str}] Enko Hub code updates"
         message["Subject"] = f"[{datetime_str}] Enko Hub code updates"
-        #message["Subject"] = "[RECAP 2023/01/10] Enko Hub code updates"
-        message["From"] = sender_credentials["email"]
+        message["From"] = f"Enko Hub Automations <{sender_credentials['email']}>"
         
         #add rendered html to email message
         #exploit the html template with the Jinja2 library 
@@ -84,7 +84,7 @@ def send_weekly_report(sender_credentials : dict(), recipient_list : list(), wee
         #initialise message object 
         message = MIMEMultipart("mixed")
         message["Subject"] = ""
-        message["From"] = sender_credentials["email"]
+        message["From"] =  "Enko Hub Automations"
         
         #add rendered html to email message
         #exploit the html template with the Jinja2 library 

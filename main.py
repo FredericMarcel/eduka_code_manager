@@ -8,6 +8,7 @@ logging.info(f"Script started at {current_GMT}")
 
 # perform other imports 
 import json 
+import schedule 
 from selenium import webdriver
 from family import *
 from student import * 
@@ -17,80 +18,60 @@ from reporting import *
 #DEBUG = True 
 ###
 
-json_input = json.load(open("input.json"))
-report_statistics = dict()
-# build statistical report template using  .json input file 
-for platform in json_input["PLATFORMS"]:
-    report_statistics[platform['platform']] = dict()
-    for statistics in json_input["REPORTING"]["main_statistics"]:
-        report_statistics[platform['platform']][statistics] = 0
+
+def code_update_cron():
+    json_input = json.load(open("input.json"))
+    report_statistics = dict()
+    # build statistical report template using  .json input file 
+    for platform in json_input["PLATFORMS"]:
+        report_statistics[platform['platform']] = dict()
+        for statistics in json_input["REPORTING"]["main_statistics"]:
+            report_statistics[platform['platform']][statistics] = 0
 
 
-#print(report_statistics.__str__())
-statistics_intermediate, errors_students = replace_student_codes(json_input, report_statistics)
-statistics, errors_families = replace_family_codes(json_input, statistics_intermediate)
+    statistics_intermediate, errors_students = replace_student_codes(json_input, report_statistics)
+    statistics, errors_families = replace_family_codes(json_input, statistics_intermediate)
 
 
-# write errors into a json file 
-errors = errors_families + errors_students
-error_dict = dict()
-error_count = 0
-for error in errors:
-    error_dict[str(error_count)]  = dict()
-    error_dict[str(error_count)]["description"] = error.description
-    error_dict[str(error_count)]["origin"] = error.origin 
-    error_count += 1
-    
-    
-# archive report statistics  
-statistics_filename = './reports/history/daily/statistics__' + current_GMT_log + '.json'
-with open(statistics_filename, "w") as statistics_json:
-    json.dump(statistics, statistics_json)
-    
-# archive report errors
-errors_filename = './reports/history/daily/errors__' + current_GMT_log + '.json'
-with open(errors_filename, "w") as errors_json:
-    json.dump(error_dict, errors_json)
+    # write errors into a json file 
+    errors = errors_families + errors_students
+    error_dict = dict()
+    error_count = 0
+    for error in errors:
+        error_dict[str(error_count)]  = dict()
+        error_dict[str(error_count)]["description"] = error.description
+        error_dict[str(error_count)]["origin"] = error.origin 
+        error_count += 1
+        
+        
+    # archive report statistics  
+    statistics_filename = './reports/history/daily/statistics__' + current_GMT_log + '.json'
+    with open(statistics_filename, "w") as statistics_json:
+        json.dump(statistics, statistics_json)
+        
+    # archive report errors
+    errors_filename = './reports/history/daily/errors__' + current_GMT_log + '.json'
+    with open(errors_filename, "w") as errors_json:
+        json.dump(error_dict, errors_json)
 
-"""
-statistics = { 
- "Enko South Africa": {
-        "Number of wrong student codes found": 71,
-        "Number of student codes replaced": 71,
-        "Number of wrong family codes found": 86,
-        "Number of family codes replaced": 86,
-        "Number of wrong guardian codes found": "N/A : Ongoing Automation",
-        "Number of guardian codes replaced": 0
-    },
- 
-  "Pestalozzi Education Centre": {
-        "Number of wrong student codes found": 3,
-        "Number of student codes replaced": 3,
-        "Number of wrong family codes found": 0,
-        "Number of family codes replaced": 0,
-        "Number of wrong guardian codes found": "N/A : Ongoing Automation",
-        "Number of guardian codes replaced": 0
-    },
-  
-  "Enko Mozambique": {
-        "Number of wrong student codes found": 3,
-        "Number of student codes replaced": 3,
-        "Number of wrong family codes found": 7,
-        "Number of family codes replaced": 7,
-        "Number of wrong guardian codes found": "N/A : Ongoing Automation",
-        "Number of guardian codes replaced": 0
-    },
-  
-  "Enko Botho": {
-        "Number of wrong student codes found": 5,
-        "Number of student codes replaced": 5,
-        "Number of wrong family codes found": 11,
-        "Number of family codes replaced": 11,
-        "Number of wrong guardian codes found": "N/A : Ongoing Automation",
-        "Number of guardian codes replaced": 0
-    }
-}   
-"""
+    date_for_email = strftime("%d/%m/%Y  %H:%M", gmtime()) 
+    REPORT_SENT = send_daily_report(json_input['REPORTING']['sender_credentials'], ['frederic.tchouli@enkoeducation.com'], statistics, errors,  [], date_for_email)
 
-date_for_email = strftime("%d/%m/%Y  %H:%M", gmtime()) 
-REPORT_SENT = send_daily_report({'email': "frederic.tchouli@enkoeducation.com", "password": "Se19neurJes06"}, ['teamit@enkoeducation.com'], statistics, [],  [], date_for_email)
+    return None 
+
+#We run the cron One time
+#Before the scheduler take hand an hor later
+code_update_cron()
+
+# Task scheduling
+# After every hour geeks() is called.
+#schedule.every().hour.do(code_update_cron())
+
+# Loop so that the scheduling task
+# keeps on running all time.
+#while True:
+        #Checks whether a scheduled task
+        #is pending to run or not
+        #schedule.run_pending()
+        #time.sleep(600)
+

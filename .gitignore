@@ -2,7 +2,10 @@
 LICENSE
 README.md
 __pycache__/
-bank/
+/bank/BOTHO/
+/bank/MZ/
+/bank/ZA/
+/bank/PEC/
 logs/
 reports/history/
 reports/templates/weekly_report.html 
