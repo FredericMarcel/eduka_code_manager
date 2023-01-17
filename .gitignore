@@ -4,3 +4,5 @@ README.md
 __pycache__/
 input.json
 temp.json
+student_V1.py
+family_V1.py
